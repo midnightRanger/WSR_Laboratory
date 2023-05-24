@@ -1,7 +1,9 @@
 ﻿using Laboratory.Models;
+using Laboratory.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,12 +26,24 @@ namespace Laboratory
     public partial class MainWindow : Window
     {
         private readonly ApplicationContext _db;
+        private MainWindowViewModel _mainWindowView;
+        private ObservableCollection<Order> _ordersOC; 
         public MainWindow()
         {
             InitializeComponent();
             _db = new ApplicationContext();
-            var physicals = _db.PhysicalEntity.Include(p=>p.Client).ToList();
+            _mainWindowView = new();
+            _ordersOC = new();
+            this.DataContext = _mainWindowView;
 
+            var orders = _db.Order.ToList();
+
+            foreach (var order in orders) { 
+                _ordersOC.Add(order);
+            }
+            ordersDG.ItemsSource = _ordersOC; 
+
+            
             
         }
     }
